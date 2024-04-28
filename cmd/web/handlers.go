@@ -9,7 +9,7 @@ import (
 	ui "github.com/aiman-farhan/snippetbox/ui/html/pages"
 )
 
-func home(w http.ResponseWriter, r *http.Request) {
+func showHomePage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Server", "Go")
 	component := ui.Home()
 
@@ -19,7 +19,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-}
+}	
 
 func showSnippet(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.PathValue("id"))

@@ -1,19 +1,26 @@
 package ui
 
-templ Base() {
+import "github.com/aiman-farhan/snippetbox/ui/html/partials"
+
+templ Base(title string) {
   <html lang='en'>
-  <head>
-    <meta charset='utf-8'/>
-    <title>Home - Snippetbox</title>
-  </head>
-  <body>
-  <header>
-    <h1><a href='/'>Snippetbox</a></h1>
-  </header>
-  <main>
-    { children...}
-  </main>
-  <footer>Powered by <a href='https://golang.org/'>Go</a></footer>
-  </body>
+    <head>
+      <meta charset='utf-8'/>
+      <title>{title}</title>
+      <link rel='stylesheet' href='/static/css/main.css'/>
+      <link rel='shortcut icon' href='/static/img/favicon.ico' type='image/x-icon'/>
+      <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700'/>
+    </head>
+    <body>
+      <header>
+        <h1><a href='/'>{title}</a></h1>
+      </header>
+      @ui.Nav()
+      <main>
+        { children...}
+      </main>
+      <footer>Powered by <a href='https://golang.org/'>Go</a></footer>
+      <script src='/static/js/main.js' type='text/javascript'></script>
+    </body>
 </html>
 }
