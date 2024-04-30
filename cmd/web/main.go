@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/aiman-farhan/snippetbox/handlers"
 	"github.com/joho/godotenv"
 )
 
@@ -17,22 +16,13 @@ func main() {
 	}
 
 	addr := os.Getenv("PORT")
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelDebug,
+		AddSource: true,
+	}))
 
-	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-	
-	mux := http.NewServeMux()
-	fileServer := http.FileServer(http.Dir("./ui/static"))
-	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
-
-	mux.HandleFunc("GET /{$}", handlers.ShowHomePage) // $ symbol restructs this route to exact match on / only
-	
-	mux.HandleFunc("GET /snippet/view/{id}", handlers.ShowSnippet)
-	mux.HandleFunc("GET /snippet/create", handlers.NewSnippetForm)
-	mux.HandleFunc("POST /snippet/create", handlers.CreateSnippet)
-
-	logger.Info("Starting on server", "addr" , addr)
-
-	start := http.ListenAndServe(addr, mux)
+	logger.Info("Starting server", "addr" , addr)
+	start := http.ListenAndServe(addr, routes())
 	logger.Error(start.Error())
 	os.Exit(1)
 }

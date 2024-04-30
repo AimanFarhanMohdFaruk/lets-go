@@ -16,7 +16,7 @@ func ShowHomePage(w http.ResponseWriter, r *http.Request) {
 	err := component.Render(r.Context(), w)
 	if err != nil {
 		log.Print(err.Error())
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		ServerError(w, r, err)
 		return
 	}
 }	
