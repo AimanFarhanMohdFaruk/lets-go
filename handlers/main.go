@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/aiman-farhan/snippetbox/config"
 	ui "github.com/aiman-farhan/snippetbox/ui/html/pages"
 )
 
@@ -21,15 +22,18 @@ func ShowHomePage(w http.ResponseWriter, r *http.Request) {
 	}
 }	
 
-func ShowSnippet(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.PathValue("id"))
+func ShowSnippet(app *config.Application) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		
+		id, err := strconv.Atoi(r.PathValue("id"))
 
-	if err != nil || id < 1 {
-		http.NotFound(w, r)
-		return
-	}
+		if err != nil || id < 1 {
+			http.NotFound(w, r)
+			return
+		}
 
-	fmt.Fprintf(w, "Display a specific snippet with id: %d", id)
+		fmt.Fprintf(w, "Display a specific snippet with id: %d", id)
+	})
 }
 
 func NewSnippetForm(w http.ResponseWriter, r *http.Request) {

@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/aiman-farhan/snippetbox/config"
+	"github.com/aiman-farhan/snippetbox/internal/models"
 	"github.com/joho/godotenv"
 )
 
@@ -20,9 +22,28 @@ func main() {
 		Level: slog.LevelDebug,
 		AddSource: true,
 	}))
-
 	logger.Info("Starting server", "addr" , addr)
-	start := http.ListenAndServe(addr, routes())
-	logger.Error(start.Error())
+
+	db, err := config.NewDB()
+	if err != nil {
+		logger.Error("Error connecting to database", err, err.Error())
+		os.Exit(1)
+	}
+
+	defer db.Close()
+
+	app := &config.Application{
+		DB: db,
+		Logger: logger,
+		Snippets: &models.SnippetModel{
+			DB: db,
+		},
+	}
+	
+	err = http.ListenAndServe(addr, routes(app))
+	if err != nil {
+		logger.Error("Error starting server", err, err.Error())
+	}
+
 	os.Exit(1)
 }
