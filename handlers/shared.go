@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"log/slog"
 	"net/http"
 	"runtime/debug"
@@ -14,6 +15,12 @@ func Make(h HTTPHandler) http.HandlerFunc {
 			slog.Error("HTTP handler error", "err", err, "path", r.URL.Path)
 		}
 	}
+}
+
+func WriteJSON(w http.ResponseWriter, status int, v any) error {
+	w.Header().Set("Content-Type", "application/json") // important, must set the header to json before writing the status
+	w.WriteHeader(status)
+	return json.NewEncoder(w).Encode(v)
 }
 
 func ServerError(w http.ResponseWriter, r *http.Request, err error) {

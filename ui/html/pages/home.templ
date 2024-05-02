@@ -1,8 +1,15 @@
 package ui
 
-templ Home() {
+import "github.com/aiman-farhan/snippetbox/ui/html/partials"
+import "github.com/aiman-farhan/snippetbox/internal/models"
+
+templ Home(snippets []models.Snippet) {
   @Base("SnippetBox"){
     <h2>Latest Snippets</h2>
     <p>Keep building to see what's next!</p>
+
+    for _, item := range snippets {
+      @ui.SnippetItem(item)
+    }
   }
 }

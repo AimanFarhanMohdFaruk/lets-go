@@ -10,7 +10,10 @@ import "context"
 import "io"
 import "bytes"
 
-func Home() templ.Component {
+import "github.com/aiman-farhan/snippetbox/ui/html/partials"
+import "github.com/aiman-farhan/snippetbox/internal/models"
+
+func Home(snippets []models.Snippet) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -32,6 +35,12 @@ func Home() templ.Component {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h2>Latest Snippets</h2><p>Keep building to see what's next!</p>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
+			}
+			for _, item := range snippets {
+				templ_7745c5c3_Err = ui.SnippetItem(item).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
 			}
 			if !templ_7745c5c3_IsBuffer {
 				_, templ_7745c5c3_Err = io.Copy(templ_7745c5c3_W, templ_7745c5c3_Buffer)

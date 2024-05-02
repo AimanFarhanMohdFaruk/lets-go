@@ -1,0 +1,21 @@
+package ui
+
+import "github.com/aiman-farhan/snippetbox/internal/models"
+import "strconv"
+
+
+templ View(snippet models.Snippet) {
+  @Base("SnippetBox") {
+    <div class='snippet'>
+      <div class='metadata'>
+        <strong>{snippet.Title}</strong>
+        <span>#{strconv.Itoa(snippet.ID)}</span>
+      </div>
+      <pre><code>{snippet.Content}</code></pre>
+      <div class='metadata'>
+        <time>Created: {snippet.Created.String()}</time>
+        <time>Expires: {snippet.Expires.String()}</time>
+      </div>
+    </div>
+  }
+}

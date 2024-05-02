@@ -13,10 +13,10 @@ func routes(app *config.Application) *http.ServeMux {
 	fileServer := http.FileServer(http.Dir("./ui/static"))
 	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
 
-	mux.HandleFunc("GET /{$}", handlers.ShowHomePage) // $ symbol restructs this route to exact match on / only
-	mux.Handle("GET /snippet/view/{id}", handlers.ShowSnippet(app))
-	mux.HandleFunc("GET /snippet/create", handlers.NewSnippetForm)
-	mux.HandleFunc("POST /snippet/create", handlers.CreateSnippet)
+	mux.Handle("GET /{$}", handlers.ShowHomePage(app)) // $ symbol restructs this route to exact match on / only
+	mux.Handle("GET /snippets/view/{id}", handlers.ShowSnippet(app))
+	mux.HandleFunc("GET /snippets/create", handlers.NewSnippetForm)
+	mux.Handle("POST /snippets/create", handlers.CreateSnippet(app))
 
 	return mux
 }
