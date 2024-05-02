@@ -19,7 +19,7 @@ type SnippetModel struct {
 	DB *sql.DB
 }
 
-func (m *SnippetModel) Insert(title string, content string, expire int) (int, error){
+func (m *SnippetModel) Create(title string, content string, expire int) (int, error){
 	stmt := `INSERT INTO snippets 
 	(title, content, created, expires) 
 	VALUES ($1, $2, $3, $4) RETURNING id`
@@ -54,7 +54,7 @@ func (m *SnippetModel) Get(id int) (Snippet, error) {
 	return s, nil
 }
 
-func (m *SnippetModel) Latest() ([]Snippet, error) {
+func (m *SnippetModel) Index() ([]Snippet, error) {
 	stmt := `SELECT id, title, content, created, expires FROM snippets
 	WHERE expires > CURRENT_TIMESTAMP ORDER BY ID DESC LIMIT 10`
 

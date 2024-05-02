@@ -13,7 +13,7 @@ import (
 
 func GetLatestSnippets(app *config.Application) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		snippets, err := app.Snippets.Latest()
+		snippets, err := app.Snippets.Index()
 		if err != nil {
 			ServerError(w, r, err)
 		}
@@ -26,7 +26,7 @@ func ShowHomePage(app *config.Application) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Server", "Go")
 	
-		snippets, err := app.Snippets.Latest()
+		snippets, err := app.Snippets.Index()
 		if err != nil {
 			ServerError(w, r, err)
 		}
@@ -82,7 +82,7 @@ func CreateSnippet(app *config.Application) http.Handler {
 		content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
 		expires := 7
 
-		id, err := app.Snippets.Insert(title, content, expires)
+		id, err := app.Snippets.Create(title, content, expires)
 		if err != nil {
 			ServerError(w, r, err)
 			return

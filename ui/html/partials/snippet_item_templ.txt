@@ -1,0 +1,4 @@
+<tr><td><a href=\"/snippet/view/{{snippet.ID}}\">
+</a></td><td>
+</td><td>#
+</td></tr>

@@ -1,10 +1,12 @@
 package ui
 
 import "github.com/aiman-farhan/snippetbox/internal/models"
+import "strconv"
 
 templ SnippetItem(snippet models.Snippet) {
-  <div class="snippet">
-    <h3>{snippet.Title}</h3>
-    <p>{snippet.Content}</p>
-  </div>
+  <tr>
+    <td><a href='/snippet/view/{{snippet.ID}}'>{snippet.Title}</a></td>
+    <td>{snippet.Created.String()}</td>
+    <td>#{strconv.Itoa(snippet.ID)}</td>
+  </tr>
 }

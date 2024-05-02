@@ -5,7 +5,7 @@ import "strconv"
 
 
 templ View(snippet models.Snippet) {
-  @Base("SnippetBox") {
+  @Base() {
     <div class='snippet'>
       <div class='metadata'>
         <strong>{snippet.Title}</strong>

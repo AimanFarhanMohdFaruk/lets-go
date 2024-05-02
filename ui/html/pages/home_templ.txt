@@ -1,0 +1,2 @@
+<h2>Latest Snippets</h2><table><tr><th>Title</th><th>Created</th><th>ID</th></tr>
+</table>
