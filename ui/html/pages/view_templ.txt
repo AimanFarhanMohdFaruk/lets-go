@@ -1,6 +1,0 @@
-<div class=\"snippet\"><div class=\"metadata\"><strong>
-</strong> <span>#
-</span></div><pre><code>
-</code></pre><div class=\"metadata\"><time>Created: 
-</time> <time>Expires: 
-</time></div></div>
