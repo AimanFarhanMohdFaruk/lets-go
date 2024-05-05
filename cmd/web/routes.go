@@ -6,9 +6,8 @@ import (
 	"github.com/aiman-farhan/snippetbox/config"
 	"github.com/aiman-farhan/snippetbox/handlers"
 )
-	
 
-func routes(app *config.Application) *http.ServeMux {
+func routes(app *config.Application) http.Handler {
 	mux := http.NewServeMux()
 	fileServer := http.FileServer(http.Dir("./ui/static"))
 	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
@@ -18,5 +17,5 @@ func routes(app *config.Application) *http.ServeMux {
 	mux.HandleFunc("GET /snippets/create", handlers.NewSnippetForm)
 	mux.Handle("POST /snippets/create", handlers.CreateSnippet(app))
 
-	return mux
+	return recoverPanic(logRequest(commonHeaders(mux), app.Logger))
 }

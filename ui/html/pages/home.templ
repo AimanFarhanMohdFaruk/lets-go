@@ -1,6 +1,6 @@
 package ui
 
-import "github.com/aiman-farhan/snippetbox/ui/html/partials"
+import "strconv"
 import "github.com/aiman-farhan/snippetbox/internal/models"
 
 templ Home(snippets []models.Snippet) {
@@ -12,9 +12,13 @@ templ Home(snippets []models.Snippet) {
       <th>Created</th>
       <th>ID</th>
     </tr>
-      for _, item := range snippets {
-        @ui.SnippetItem(item)
-      }
+    for _, item := range snippets {
+      <tr>
+        <td><a href='/snippet/view/{{snippet.ID}}'>{item.Title}</a></td>
+        <td>{displayTime(item.Created)}</td>
+        <td>#{strconv.Itoa(item.ID)}</td>
+      </tr>
+    }
     </table>
   }
 }

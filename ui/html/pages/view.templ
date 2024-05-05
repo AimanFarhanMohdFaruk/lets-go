@@ -13,8 +13,8 @@ templ View(snippet models.Snippet) {
       </div>
       <pre><code>{snippet.Content}</code></pre>
       <div class='metadata'>
-        <time>Created: {snippet.Created.String()}</time>
-        <time>Expires: {snippet.Expires.String()}</time>
+        <time>Created: {displayTime(snippet.Created)}</time>
+        <time>Expires: {displayTime(snippet.Expires)}</time>
       </div>
     </div>
   }
