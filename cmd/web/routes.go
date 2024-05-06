@@ -14,7 +14,7 @@ func routes(app *config.Application) http.Handler {
 
 	mux.Handle("GET /{$}", handlers.ShowHomePage(app)) // $ symbol restructs this route to exact match on / only
 	mux.Handle("GET /snippets/view/{id}", handlers.ShowSnippet(app))
-	mux.HandleFunc("GET /snippets/create", handlers.NewSnippetForm)
+	mux.Handle("GET /snippets/create", handlers.NewSnippetForm(app))
 	mux.Handle("POST /snippets/create", handlers.CreateSnippet(app))
 
 	return recoverPanic(logRequest(commonHeaders(mux), app.Logger))

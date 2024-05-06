@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -70,23 +71,35 @@ func ShowSnippet(app *config.Application) http.Handler {
 	})
 }
 
-func NewSnippetForm(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Display a form for creating a new snippet..."))
+func NewSnippetForm(app *config.Application) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		page := ui.Create()
+
+		err := page.Render(r.Context(), w)
+		if err != nil {
+			app.Logger.Error(err.Error())
+			ServerError(w, r, err)
+		}
+		app.Logger.Info("Rendering create form")
+	})
 }
 
 func CreateSnippet(app *config.Application) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		title := "O snail"
-		content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
-		expires := 7
+		createSnippetRequest := models.CreateSnippetRequest{}
+		
+		if err := json.NewDecoder(r.Body).Decode(&createSnippetRequest); err != nil {
+			ServerError(w, r, err)
+			return
+		}
 
-		id, err := app.Snippets.Create(title, content, expires)
+		id, err := app.Snippets.Create(createSnippetRequest.Title, createSnippetRequest.Content, createSnippetRequest.Expires)
 		if err != nil {
 			ServerError(w, r, err)
 			return
 		}
 
-		http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d", id), http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/snippets/view/%d", id), http.StatusSeeOther)
 	})
 }
 

@@ -19,6 +19,12 @@ type SnippetModel struct {
 	DB *sql.DB
 }
 
+type CreateSnippetRequest struct {
+	Title string `json:"title"`
+	Content string `json:"content"`
+	Expires int `json:"expires,string"`
+}
+
 func (m *SnippetModel) Create(title string, content string, expire int) (int, error){
 	stmt := `INSERT INTO snippets 
 	(title, content, created, expires) 
