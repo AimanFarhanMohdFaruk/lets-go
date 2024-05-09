@@ -2,7 +2,14 @@ package ui
 
 templ Create() {
   @Base() {
-  <form hx-push-url='true' hx-swap='outerHTML' hx-target='body' hx-post='/snippets/create' hx-ext='json-enc'>
+  <form 
+   hx-post='/snippets/create'
+   hx-indicator="#spinner"
+   hx-push-url='true'
+   hx-swap='outerHTML'
+   hx-target='body'
+   hx-ext='json-enc'
+   >
     <div>
       <label>Title:</label>
       <input type='text' name='title' />

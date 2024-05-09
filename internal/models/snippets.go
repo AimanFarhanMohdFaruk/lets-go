@@ -20,9 +20,9 @@ type SnippetModel struct {
 }
 
 type CreateSnippetRequest struct {
-	Title string `json:"title"`
-	Content string `json:"content"`
-	Expires int `json:"expires,string"`
+	Title string `json:"title" validate:"required"`
+	Content string `json:"content" validate:"required"`
+	Expires int `json:"expires,string" validate:"required"`
 }
 
 func (m *SnippetModel) Create(title string, content string, expire int) (int, error){

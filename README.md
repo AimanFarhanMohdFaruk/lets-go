@@ -1,2 +1,3 @@
-# lets-go
-# lets-go
+# TODOS
+
+1. Change handlers to return errors instead

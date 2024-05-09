@@ -29,7 +29,7 @@ func Create() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form hx-push-url=\"true\" hx-swap=\"outerHTML\" hx-target=\"body\" hx-post=\"/snippets/create\" hx-ext=\"json-enc\"><div><label>Title:</label> <input type=\"text\" name=\"title\"></div><div><label>Content:</label> <textarea name=\"content\"></textarea></div><div><label>Delete in:</label> <input type=\"radio\" name=\"expires\" value=\"365\" checked> One Year <input type=\"radio\" name=\"expires\" value=\"7\"> One Week <input type=\"radio\" name=\"expires\" value=\"1\"> One Day</div><div><input type=\"submit\" value=\"Publish snippet\"></div></form>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form hx-post=\"/snippets/create\" hx-indicator=\"#spinner\" hx-push-url=\"true\" hx-swap=\"outerHTML\" hx-target=\"body\" hx-ext=\"json-enc\"><div><label>Title:</label> <input type=\"text\" name=\"title\"></div><div><label>Content:</label> <textarea name=\"content\"></textarea></div><div><label>Delete in:</label> <input type=\"radio\" name=\"expires\" value=\"365\" checked> One Year <input type=\"radio\" name=\"expires\" value=\"7\"> One Week <input type=\"radio\" name=\"expires\" value=\"1\"> One Day</div><div><input type=\"submit\" value=\"Publish snippet\"></div></form>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

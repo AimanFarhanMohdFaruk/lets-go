@@ -8,6 +8,7 @@ import (
 
 	"github.com/aiman-farhan/snippetbox/config"
 	"github.com/aiman-farhan/snippetbox/internal/models"
+	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
 )
 
@@ -24,6 +25,7 @@ func main() {
 	}))
 	logger.Info("Starting server", "addr" , addr)
 
+	validator := validator.New(validator.WithRequiredStructEnabled())
 	db, err := config.NewDB()
 	if err != nil {
 		logger.Error("Error connecting to database", err, err.Error())
@@ -38,6 +40,7 @@ func main() {
 		Snippets: &models.SnippetModel{
 			DB: db,
 		},
+		Validator: validator,
 	}
 	
 	err = http.ListenAndServe(addr, routes(app))

@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -83,7 +82,7 @@ func NewSnippetForm(app *config.Application) http.Handler {
 		app.Logger.Info("Rendering create form")
 	})
 }
-
+ 
 func CreateSnippet(app *config.Application) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		createSnippetRequest := models.CreateSnippetRequest{}
@@ -93,16 +92,20 @@ func CreateSnippet(app *config.Application) http.Handler {
 			return
 		}
 
-		id, err := app.Snippets.Create(createSnippetRequest.Title, createSnippetRequest.Content, createSnippetRequest.Expires)
-		if err != nil {
+		if err := app.Validator.Struct(createSnippetRequest); err != nil {
 			ServerError(w, r, err)
 			return
 		}
 
-		http.Redirect(w, r, fmt.Sprintf("/snippets/view/%d", id), http.StatusSeeOther)
+		// id, err := app.Snippets.Create(createSnippetRequest.Title, createSnippetRequest.Content, createSnippetRequest.Expires)
+		// if err != nil {
+		// 	ServerError(w, r, err)
+		// 	return
+		// }
+
+		// http.Redirect(w, r, fmt.Sprintf("/snippets/view/%d", id), http.StatusSeeOther)
 	})
 }
-
 
 // Pattern for including a panic recovery for any background jobs
 
