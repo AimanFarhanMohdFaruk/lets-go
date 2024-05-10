@@ -7,6 +7,11 @@ import (
 	"runtime/debug"
 )
 
+type ApiError struct {
+	StatusCode int "json:\"statusCode\""
+	Error string "json:\"msg\""
+}
+
 type HTTPHandler func(w http.ResponseWriter, r *http.Request) error
 
 func Make(h HTTPHandler) http.HandlerFunc {
@@ -23,7 +28,7 @@ func WriteJSON(w http.ResponseWriter, status int, v any) error {
 	return json.NewEncoder(w).Encode(v)
 }
 
-func ServerError(w http.ResponseWriter, r *http.Request, err error) {
+func ServerError(w http.ResponseWriter, r *http.Request, status int, err error) {
 	var (
 		method = r.Method
 		uri = r.URL.RequestURI()
@@ -31,7 +36,7 @@ func ServerError(w http.ResponseWriter, r *http.Request, err error) {
 	)
 
 	slog.Error(err.Error(), "method", method, "path", uri, "trace", trace)
-	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	WriteJSON(w, status, ApiError{StatusCode: status, Error: err.Error()})
 }
 
 func ClientError(w http.ResponseWriter, status int) {

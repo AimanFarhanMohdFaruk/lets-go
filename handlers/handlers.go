@@ -15,7 +15,7 @@ func GetLatestSnippets(app *config.Application) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		snippets, err := app.Snippets.Index()
 		if err != nil {
-			ServerError(w, r, err)
+			ServerError(w, r, http.StatusInternalServerError, err)
 		}
 
 		WriteJSON(w, http.StatusOK, snippets)
@@ -26,14 +26,14 @@ func ShowHomePage(app *config.Application) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		snippets, err := app.Snippets.Index()
 		if err != nil {
-			ServerError(w, r, err)
+			ServerError(w, r, http.StatusInternalServerError, err)
 		}
 		
 		component := ui.Home(snippets)
 		err = component.Render(r.Context(), w)
 		if err != nil {
 			app.Logger.Error(err.Error())
-			ServerError(w, r, err)
+			ServerError(w, r, http.StatusInternalServerError, err)
 			return
 		}
 		app.Logger.Info("Rendering home page")
@@ -55,7 +55,7 @@ func ShowSnippet(app *config.Application) http.Handler {
 			if errors.Is(err, models.ErrNoRecord) {
 			http.NotFound(w, r)
 		} else {
-			ServerError(w, r, err)
+			ServerError(w, r, http.StatusInternalServerError, err)
 		}
 			return
 		}
@@ -64,7 +64,7 @@ func ShowSnippet(app *config.Application) http.Handler {
 		err = component.Render(r.Context(), w)
 		if err != nil {
 			app.Logger.Error(err.Error())
-			ServerError(w, r, err)
+			ServerError(w, r, http.StatusInternalServerError, err)
 		}
 		app.Logger.Info("Rendering view snippet")
 	})
@@ -77,7 +77,7 @@ func NewSnippetForm(app *config.Application) http.Handler {
 		err := page.Render(r.Context(), w)
 		if err != nil {
 			app.Logger.Error(err.Error())
-			ServerError(w, r, err)
+			ServerError(w, r, http.StatusInternalServerError, err)
 		}
 		app.Logger.Info("Rendering create form")
 	})
@@ -88,12 +88,13 @@ func CreateSnippet(app *config.Application) http.Handler {
 		createSnippetRequest := models.CreateSnippetRequest{}
 		
 		if err := json.NewDecoder(r.Body).Decode(&createSnippetRequest); err != nil {
-			ServerError(w, r, err)
+			ServerError(w, r, http.StatusBadRequest, err)
 			return
 		}
+		defer r.Body.Close()
 
 		if err := app.Validator.Struct(createSnippetRequest); err != nil {
-			ServerError(w, r, err)
+			ServerError(w, r, http.StatusBadRequest, err)
 			return
 		}
 
