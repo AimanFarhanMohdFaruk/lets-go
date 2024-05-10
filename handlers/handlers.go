@@ -94,8 +94,7 @@ func CreateSnippet(app *config.Application) http.Handler {
 		defer r.Body.Close()
 
 		if err := app.Validator.Struct(createSnippetRequest); err != nil {
-			ServerError(w, r, http.StatusBadRequest, err)
-			return
+			InvalidRequestData(w, r, err)
 		}
 
 		// id, err := app.Snippets.Create(createSnippetRequest.Title, createSnippetRequest.Content, createSnippetRequest.Expires)
