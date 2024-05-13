@@ -67,7 +67,6 @@ func ShowSnippet(app *config.Application) http.Handler {
 			app.Logger.Error(err.Error())
 			ServerError(w, r, err)
 		}
-		app.Logger.Info("Rendering view snippet")
 	})
 }
 
