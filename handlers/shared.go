@@ -24,6 +24,26 @@ func Make(h HTTPHandler) http.HandlerFunc {
 	}
 }
 
+func WriteJSON(w http.ResponseWriter, status int, v any) error {
+	w.Header().Set("Content-Type", "application/json") // important, must set the header to json before writing the status
+	w.WriteHeader(status)
+	return json.NewEncoder(w).Encode(v)
+}
+
+func RenderError(w http.ResponseWriter, r *http.Request, status int, err error){
+	var (
+		method = r.Method
+		uri = r.URL.RequestURI()
+		trace = string(debug.Stack())
+	)
+
+	slog.Error(err.Error(), "method", method, "path", uri, "trace", trace)
+	WriteJSON(w, status, ApiError{
+		StatusCode: status,
+		Msg: err.Error(),
+	})
+}
+
 func InvalidRequestData(w http.ResponseWriter, r *http.Request, err error) {
 	fieldErrors := make(map[string] string)
 	for _ , err := range err.(validator.ValidationErrors) {
@@ -36,13 +56,9 @@ func InvalidRequestData(w http.ResponseWriter, r *http.Request, err error) {
 	})
 }
 
-func WriteJSON(w http.ResponseWriter, status int, v any) error {
-	w.Header().Set("Content-Type", "application/json") // important, must set the header to json before writing the status
-	w.WriteHeader(status)
-	return json.NewEncoder(w).Encode(v)
-}
-
-func ServerError(w http.ResponseWriter, r *http.Request, status int, err error) {
+// Function below is used for errors that we do not want to show to the user.
+// the full error will get logged
+func ServerError(w http.ResponseWriter, r *http.Request, err error) {
 	var (
 		method = r.Method
 		uri = r.URL.RequestURI()
@@ -50,5 +66,8 @@ func ServerError(w http.ResponseWriter, r *http.Request, status int, err error) 
 	)
 
 	slog.Error(err.Error(), "method", method, "path", uri, "trace", trace)
-	WriteJSON(w, status, ApiError{StatusCode: status, Msg: err.Error()})
+	WriteJSON(w, http.StatusInternalServerError,
+		ApiError{
+			StatusCode: http.StatusInternalServerError,
+		 	Msg: http.StatusText(http.StatusInternalServerError)})
 }
