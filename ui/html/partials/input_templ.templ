@@ -1,0 +1,13 @@
+package ui
+
+templ Input(inputConfig InputConfig) {
+  <input 
+    type={inputConfig.Typ}
+    name={inputConfig.Name}
+    value={inputConfig.Value}
+    error={inputConfig.Err}
+    placeholder={inputConfig.Placeholder}
+    checked?={inputConfig.Checked}
+  />
+  <label>{inputConfig.Label}</label>
+}

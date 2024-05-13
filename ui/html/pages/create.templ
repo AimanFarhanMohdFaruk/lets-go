@@ -1,10 +1,11 @@
 package ui
 
-templ Create() {
+import "github.com/aiman-farhan/snippetbox/ui/html/partials"
+
+templ Create(fieldErrors map[string]string) {
   @Base() {
   <form 
    hx-post='/snippets/create'
-   hx-indicator="#spinner"
    hx-push-url='true'
    hx-swap='outerHTML'
    hx-target='body'
@@ -20,9 +21,27 @@ templ Create() {
     </div>
     <div>
       <label>Delete in:</label>
-      <input type='radio' name='expires' value='365' checked /> One Year
-      <input type='radio' name='expires' value='7'/> One Week
-      <input type='radio' name='expires' value='1'/> One Day
+      @ui.Input(ui.InputConfig{
+        Name: "expires",
+        Typ: "radio",
+        Value: "365",
+        Checked: true,
+        Label: "One Year",
+      })
+      @ui.Input(ui.InputConfig{
+        Name: "expires",
+        Typ: "radio",
+        Value: "7",
+        Checked: false,
+        Label: "One Week",
+      })
+      @ui.Input(ui.InputConfig{
+        Name: "expires",
+        Typ: "radio",
+        Value: "1",
+        Checked: false,
+        Label: "One Day",
+      })
     </div>
     <div>
       <input type='submit' value='Publish snippet' />

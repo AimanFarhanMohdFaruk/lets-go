@@ -45,15 +45,27 @@ func RenderError(w http.ResponseWriter, r *http.Request, status int, err error){
 }
 
 func InvalidRequestData(w http.ResponseWriter, r *http.Request, err error) {
+	fieldErrors := GetFieldErrors(err)
+
+	var (
+		method = r.Method
+		uri = r.URL.RequestURI()
+	)
+
+	slog.Error(err.Error(), "method", method, "path", uri)
+	WriteJSON(w, http.StatusUnprocessableEntity, ApiError{
+		StatusCode: http.StatusUnprocessableEntity,
+		Msg: fieldErrors,
+	})
+}
+
+func GetFieldErrors(err error) map[string]string {
 	fieldErrors := make(map[string] string)
 	for _ , err := range err.(validator.ValidationErrors) {
 		fieldErrors[err.Field()] = err.Tag()
 	}
 
-	WriteJSON(w, http.StatusUnprocessableEntity, ApiError{
-		StatusCode: http.StatusUnprocessableEntity,
-		Msg: fieldErrors,
-	})
+	return fieldErrors
 }
 
 // Function below is used for errors that we do not want to show to the user.

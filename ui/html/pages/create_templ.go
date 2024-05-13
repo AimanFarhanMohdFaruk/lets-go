@@ -10,7 +10,9 @@ import "context"
 import "io"
 import "bytes"
 
-func Create() templ.Component {
+import "github.com/aiman-farhan/snippetbox/ui/html/partials"
+
+func Create(fieldErrors map[string]string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -29,7 +31,41 @@ func Create() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form hx-post=\"/snippets/create\" hx-indicator=\"#spinner\" hx-push-url=\"true\" hx-swap=\"outerHTML\" hx-target=\"body\" hx-ext=\"json-enc\"><div><label>Title:</label> <input type=\"text\" name=\"title\"></div><div><label>Content:</label> <textarea name=\"content\"></textarea></div><div><label>Delete in:</label> <input type=\"radio\" name=\"expires\" value=\"365\" checked> One Year <input type=\"radio\" name=\"expires\" value=\"7\"> One Week <input type=\"radio\" name=\"expires\" value=\"1\"> One Day</div><div><input type=\"submit\" value=\"Publish snippet\"></div></form>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form hx-post=\"/snippets/create\" hx-push-url=\"true\" hx-swap=\"outerHTML\" hx-target=\"body\" hx-ext=\"json-enc\"><div><label>Title:</label> <input type=\"text\" name=\"title\"></div><div><label>Content:</label> <textarea name=\"content\"></textarea></div><div><label>Delete in:</label>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = ui.Input(ui.InputConfig{
+				Name:    "expires",
+				Typ:     "radio",
+				Value:   "365",
+				Checked: true,
+				Label:   "One Year",
+			}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = ui.Input(ui.InputConfig{
+				Name:    "expires",
+				Typ:     "radio",
+				Value:   "7",
+				Checked: false,
+				Label:   "One Week",
+			}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = ui.Input(ui.InputConfig{
+				Name:    "expires",
+				Typ:     "radio",
+				Value:   "1",
+				Checked: false,
+				Label:   "One Day",
+			}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div><input type=\"submit\" value=\"Publish snippet\"></div></form>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

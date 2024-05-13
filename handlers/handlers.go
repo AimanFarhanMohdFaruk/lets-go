@@ -72,7 +72,7 @@ func ShowSnippet(app *config.Application) http.Handler {
 
 func NewSnippetForm(app *config.Application) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		page := ui.Create()
+		page := ui.Create(map[string]string{"title": "", "content": ""})
 
 		err := page.Render(r.Context(), w)
 		if err != nil {
@@ -94,7 +94,16 @@ func CreateSnippet(app *config.Application) http.Handler {
 		defer r.Body.Close()
 
 		if err := app.Validator.Struct(createSnippetRequest); err != nil {
-			InvalidRequestData(w, r, err)
+			fieldErrors := GetFieldErrors(err)
+			page := ui.Create(fieldErrors)
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			err := page.Render(r.Context(), w)
+
+			if err != nil {
+				app.Logger.Error(err.Error())
+				ServerError(w, r, err)
+			}
+			return
 		}
 
 		id, err := app.Snippets.Create(createSnippetRequest.Title, createSnippetRequest.Content, createSnippetRequest.Expires)
