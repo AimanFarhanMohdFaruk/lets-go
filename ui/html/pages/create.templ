@@ -2,7 +2,14 @@ package ui
 
 import "github.com/aiman-farhan/snippetbox/ui/html/partials"
 
-templ Create(fieldErrors map[string]string) {
+type SnippetCreateForm struct {
+  Title string
+  Content string
+  Expires int
+  FieldErrors map[string]string
+}
+
+templ Create(form SnippetCreateForm) {
   @Base() {
   <form 
    hx-post='/snippets/create'
@@ -13,11 +20,19 @@ templ Create(fieldErrors map[string]string) {
    >
     <div>
       <label>Title:</label>
-      <input type='text' name='title' />
+      if form.FieldErrors["Title"] != "" {
+        <p class='error'>{ form.FieldErrors["Title"] }</p>
+      }
+      <input type='text' name='title' value={form.Title}/>
     </div>
     <div>
       <label>Content:</label>
-      <textarea name='content'></textarea>
+      if form.FieldErrors["Content"] != "" {
+        <p class='error'>{ form.FieldErrors["Content"] }</p>
+      }
+      <textarea name='content'>
+        {form.Content}
+      </textarea>
     </div>
     <div>
       <label>Delete in:</label>
@@ -26,22 +41,25 @@ templ Create(fieldErrors map[string]string) {
         Typ: "radio",
         Value: "365",
         Checked: true,
-        Label: "One Year",
+        Err: form.FieldErrors["Expires"],
       })
+      <span>365 days</span>
       @ui.Input(ui.InputConfig{
         Name: "expires",
         Typ: "radio",
         Value: "7",
         Checked: false,
-        Label: "One Week",
+        Err: form.FieldErrors["Expires"],
       })
+      <span>7 days</span>
       @ui.Input(ui.InputConfig{
         Name: "expires",
         Typ: "radio",
         Value: "1",
         Checked: false,
-        Label: "One Day",
+        Err: form.FieldErrors["Expires"],
       })
+      <span>1 day</span>
     </div>
     <div>
       <input type='submit' value='Publish snippet' />

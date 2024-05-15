@@ -59,15 +59,6 @@ func InvalidRequestData(w http.ResponseWriter, r *http.Request, err error) {
 	})
 }
 
-func GetFieldErrors(err error) map[string]string {
-	fieldErrors := make(map[string] string)
-	for _ , err := range err.(validator.ValidationErrors) {
-		fieldErrors[err.Field()] = err.Tag()
-	}
-
-	return fieldErrors
-}
-
 // Function below is used for errors that we do not want to show to the user.
 // the full error will get logged
 func ServerError(w http.ResponseWriter, r *http.Request, err error) {
@@ -82,4 +73,14 @@ func ServerError(w http.ResponseWriter, r *http.Request, err error) {
 		ApiError{
 			StatusCode: http.StatusInternalServerError,
 		 	Msg: http.StatusText(http.StatusInternalServerError)})
+}
+
+
+func GetFieldErrors(err error) map[string]string {
+	fieldErrors := make(map[string] string)
+	for _ , err := range err.(validator.ValidationErrors) {
+		fieldErrors[err.Field()] = err.Tag()
+	}
+
+	return fieldErrors
 }

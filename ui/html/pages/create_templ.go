@@ -12,7 +12,14 @@ import "bytes"
 
 import "github.com/aiman-farhan/snippetbox/ui/html/partials"
 
-func Create(fieldErrors map[string]string) templ.Component {
+type SnippetCreateForm struct {
+	Title       string
+	Content     string
+	Expires     int
+	FieldErrors map[string]string
+}
+
+func Create(form SnippetCreateForm) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -31,7 +38,79 @@ func Create(fieldErrors map[string]string) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form hx-post=\"/snippets/create\" hx-push-url=\"true\" hx-swap=\"outerHTML\" hx-target=\"body\" hx-ext=\"json-enc\"><div><label>Title:</label> <input type=\"text\" name=\"title\"></div><div><label>Content:</label> <textarea name=\"content\"></textarea></div><div><label>Delete in:</label>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form hx-post=\"/snippets/create\" hx-push-url=\"true\" hx-swap=\"outerHTML\" hx-target=\"body\" hx-ext=\"json-enc\"><div><label>Title:</label> ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if form.FieldErrors["Title"] != "" {
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"error\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var3 string
+				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(form.FieldErrors["Title"])
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/html/pages/create.templ`, Line: 24, Col: 52}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input type=\"text\" name=\"title\" value=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var4 string
+			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(form.Title)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/html/pages/create.templ`, Line: 26, Col: 55}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div><div><label>Content:</label> ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if form.FieldErrors["Content"] != "" {
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"error\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var5 string
+				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(form.FieldErrors["Content"])
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/html/pages/create.templ`, Line: 31, Col: 54}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<textarea name=\"content\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var6 string
+			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(form.Content)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/html/pages/create.templ`, Line: 34, Col: 21}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</textarea></div><div><label>Delete in:</label>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -40,8 +119,12 @@ func Create(fieldErrors map[string]string) templ.Component {
 				Typ:     "radio",
 				Value:   "365",
 				Checked: true,
-				Label:   "One Year",
+				Err:     form.FieldErrors["Expires"],
 			}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<span>365 days</span>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -50,8 +133,12 @@ func Create(fieldErrors map[string]string) templ.Component {
 				Typ:     "radio",
 				Value:   "7",
 				Checked: false,
-				Label:   "One Week",
+				Err:     form.FieldErrors["Expires"],
 			}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<span>7 days</span>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -60,12 +147,12 @@ func Create(fieldErrors map[string]string) templ.Component {
 				Typ:     "radio",
 				Value:   "1",
 				Checked: false,
-				Label:   "One Day",
+				Err:     form.FieldErrors["Expires"],
 			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div><input type=\"submit\" value=\"Publish snippet\"></div></form>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<span>1 day</span></div><div><input type=\"submit\" value=\"Publish snippet\"></div></form>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

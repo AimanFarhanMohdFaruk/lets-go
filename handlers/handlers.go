@@ -12,17 +12,6 @@ import (
 	ui "github.com/aiman-farhan/snippetbox/ui/html/pages"
 )
 
-func GetLatestSnippets(app *config.Application) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		snippets, err := app.Snippets.Index()
-		if err != nil {
-			ServerError(w, r, err)
-		}
-
-		WriteJSON(w, http.StatusOK, snippets)
-	})
-}
-
 func ShowHomePage(app *config.Application) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		snippets, err := app.Snippets.Index()
@@ -33,7 +22,6 @@ func ShowHomePage(app *config.Application) http.Handler {
 		component := ui.Home(snippets)
 		err = component.Render(r.Context(), w)
 		if err != nil {
-			app.Logger.Error(err.Error())
 			ServerError(w, r, err)
 			return
 		}
@@ -46,7 +34,6 @@ func ShowSnippet(app *config.Application) http.Handler {
 		
 		id, err := strconv.Atoi(r.PathValue("id"))
 		if err != nil || id < 1 {
-			app.Logger.Error("Invalid identifier for snippet")
 			http.NotFound(w, r)
 			return
 		}
@@ -54,17 +41,16 @@ func ShowSnippet(app *config.Application) http.Handler {
 		snippet, err := app.Snippets.Get(id)
 		if err != nil {
 			if errors.Is(err, models.ErrNoRecord) {
-			http.NotFound(w, r)
+			RenderError(w, r, http.StatusNotFound, err)
 		} else {
 			ServerError(w, r, err)
 		}
 			return
 		}
 
-		component := ui.View(snippet)
-		err = component.Render(r.Context(), w)
+		page := ui.View(snippet)
+		err = page.Render(r.Context(), w)
 		if err != nil {
-			app.Logger.Error(err.Error())
 			ServerError(w, r, err)
 		}
 	})
@@ -72,11 +58,17 @@ func ShowSnippet(app *config.Application) http.Handler {
 
 func NewSnippetForm(app *config.Application) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		page := ui.Create(map[string]string{"title": "", "content": ""})
+		form := ui.SnippetCreateForm{
+			Title: "",
+			Content: "",
+			Expires: 365,
+			FieldErrors: make(map[string]string),
+		}
+
+		page := ui.Create(form)
 
 		err := page.Render(r.Context(), w)
 		if err != nil {
-			app.Logger.Error(err.Error())
 			ServerError(w, r, err)
 		}
 		app.Logger.Info("Rendering create form")
@@ -92,15 +84,23 @@ func CreateSnippet(app *config.Application) http.Handler {
 			return
 		}
 		defer r.Body.Close()
-
+		
+		fieldErrors := make(map[string]string)
 		if err := app.Validator.Struct(createSnippetRequest); err != nil {
-			fieldErrors := GetFieldErrors(err)
-			page := ui.Create(fieldErrors)
-			w.WriteHeader(http.StatusUnprocessableEntity)
+			fieldErrors = GetFieldErrors(err)
+		}
+
+		if len(fieldErrors) > 0 {
+			form := ui.SnippetCreateForm{
+				Title: createSnippetRequest.Title,
+				Content: createSnippetRequest.Content,
+				Expires: createSnippetRequest.Expires,
+				FieldErrors: fieldErrors,
+			}
+			page := ui.Create(form)
 			err := page.Render(r.Context(), w)
 
 			if err != nil {
-				app.Logger.Error(err.Error())
 				ServerError(w, r, err)
 			}
 			return
@@ -113,6 +113,17 @@ func CreateSnippet(app *config.Application) http.Handler {
 		}
 
 		http.Redirect(w, r, fmt.Sprintf("/snippets/view/%d", id), http.StatusSeeOther)
+	})
+}
+
+func GetLatestSnippets(app *config.Application) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		snippets, err := app.Snippets.Index()
+		if err != nil {
+			ServerError(w, r, err)
+		}
+
+		WriteJSON(w, http.StatusOK, snippets)
 	})
 }
 
